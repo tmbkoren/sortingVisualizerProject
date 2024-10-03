@@ -4,7 +4,7 @@ import time
 
 
 def bubble_sort(arr, draw_data=None, delay=0):
-    print('Bubble sorting... ')
+    print('Bubble sorting... ', arr)
     n = len(arr)
     for i in range(n):
         for j in range(0, n - i - 1):
@@ -12,7 +12,7 @@ def bubble_sort(arr, draw_data=None, delay=0):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
             if draw_data:
                 draw_data(arr, ["green" if x == j or x == j +
-                          1 else "blue" for x in range(len(arr))])
+                          1 else "blue" for x in range(len(arr))], algo_num=0)
             time.sleep(delay)
     return arr
 
@@ -40,7 +40,7 @@ def merge_sort(arr, draw_data=None, delay=0):
                 j += 1
             k += 1
             if draw_data:
-                draw_data(arr, ["green" for x in range(len(arr))])
+                draw_data(arr, ["green" for x in range(len(arr))], algo_num=1)
             time.sleep(delay)
 
         while i < len(L):
@@ -52,6 +52,8 @@ def merge_sort(arr, draw_data=None, delay=0):
             arr[k] = R[j]
             j += 1
             k += 1
+        if draw_data:
+            draw_data(arr, ["green" for x in range(len(arr))], algo_num=1)
     return arr
 
 # Quick Sort
@@ -80,10 +82,14 @@ def partition(arr, low, high, draw_data=None, delay=0):
             arr[i], arr[j] = arr[j], arr[i]
         if draw_data:
             draw_data(arr, ["green" if x == i or x ==
-                      j else "blue" for x in range(len(arr))])
+                      j else "blue" for x in range(len(arr))], algo_num=2)
         time.sleep(delay)
 
     arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    if draw_data:
+        draw_data(arr, ["green" if x == i or x ==
+            j else "blue" for x in range(len(arr))], algo_num=2)
+        time.sleep(delay)
     return i + 1
 
 # Radix Sort
@@ -121,5 +127,5 @@ def counting_sort(arr, exp, draw_data=None, delay=0):
         arr[i] = output[i]
         if draw_data:
             draw_data(
-                arr, ["green" if x == i else "blue" for x in range(len(arr))])
+                arr, ["green" if x == i else "blue" for x in range(len(arr))], algo_num=3)
         time.sleep(delay)

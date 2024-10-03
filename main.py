@@ -1,6 +1,6 @@
 import tkinter as tk
 import random
-from visualizer import draw_data
+from visualizer import visualize_sorting
 from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort
 import multiprocessing
 
@@ -34,9 +34,15 @@ def main():
     tk.Checkbutton(window, text="Quick Sort", variable=quickSortBool).pack()
     tk.Checkbutton(window, text="Radix Sort", variable=radixSortBool).pack()
 
-    arrLength = tk.IntVar()
-    minVal = tk.StringVar()
-    maxVal = tk.StringVar()
+    speed = tk.IntVar(value=100)
+
+    tk.Label(window, text="Select delay(ms) between steps: ").pack()
+    tk.Scale(window, from_=50, to=1000, resolution=1,
+             orient=tk.HORIZONTAL, length=400, variable=speed).pack()
+
+    arrLength = tk.IntVar(value=15)
+    minVal = tk.StringVar(value=1)
+    maxVal = tk.StringVar(value=40)
 
     tk.Label(window, text="Select array length: ").pack()
     tk.Scale(window, from_=1, to=100,
@@ -63,26 +69,31 @@ def main():
         selected = [bubbleSortBool.get(), mergeSortBool.get(),
                     quickSortBool.get(), radixSortBool.get()]
         processes = []
-        
+        delay = speed.get()/1000
+
         for i, v in enumerate(selected):
             if v == 1:
                 if i == 0:
                     print('Bubble sort selected')
-                    p = multiprocessing.Process(target=bubble_sort, args=(arr, draw_data, 0.1))
+                    p = multiprocessing.Process(
+                        target=visualize_sorting, args=(bubble_sort, arr, delay))
                     processes.append(p)
                 elif i == 1:
                     print('Merge sort selected')
-                    p = multiprocessing.Process(target=merge_sort, args=(arr, draw_data, 0.1))
+                    p = multiprocessing.Process(
+                        target=visualize_sorting, args=(merge_sort, arr, delay))
                     processes.append(p)
                 elif i == 2:
                     print('Quick sort selected')
-                    p = multiprocessing.Process(target=quick_sort, args=(arr, draw_data, 0.1))
+                    p = multiprocessing.Process(
+                        target=visualize_sorting, args=(quick_sort, arr, delay))
                     processes.append(p)
                 elif i == 3:
                     print('Radix sort selected')
-                    p = multiprocessing.Process(target=radix_sort, args=(arr, draw_data, 0.1))
+                    p = multiprocessing.Process(
+                        target=visualize_sorting, args=(radix_sort, arr, delay))
                     processes.append(p)
-        
+
         for p in processes:
             p.start()
 

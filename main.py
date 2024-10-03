@@ -2,7 +2,7 @@ import tkinter as tk
 import random
 from visualizer import draw_data
 from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort
-import threading
+import multiprocessing
 
 
 def printValues(window, values):
@@ -15,7 +15,9 @@ def generateRandomArray(length, minVal, maxVal):
     print('Temp: ', temp)
     return temp
 
+
 arr = []
+
 
 def main():
     # UI declaration
@@ -48,7 +50,8 @@ def main():
 
     def generateButtonHandler():
         global arr
-        arr = generateRandomArray(arrLength.get(), int(minVal.get()), int(maxVal.get())).copy()
+        arr = generateRandomArray(arrLength.get(), int(
+            minVal.get()), int(maxVal.get())).copy()
         print('Array: ', arr)
         printValues(window, arr)
 
@@ -57,35 +60,31 @@ def main():
     # Function to handle the click event of the 'sort' button, not functional yet
 
     def startSorting():
-        def bubbleSortHandler():
-            print('Bubble sort handler... ')
-            bubble_sort(arr.copy())
-        def mergeSortHandler():
-            merge_sort(arr.copy())
-        def quickSortHandler():
-            quick_sort(arr.copy())
-        def radixSortHandler():
-            radix_sort(arr.copy())
-
-        t1, t2, t3, t4 = None, None, None, None
-
-        if bubbleSortBool.get():
-            t1 = threading.Thread(target=bubbleSortHandler)
-        if mergeSortBool.get():
-            t2 = threading.Thread(target=mergeSortHandler)
-        if quickSortBool.get():
-            t3 = threading.Thread(target=quickSortHandler)
-        if radixSortBool.get():
-            t4 = threading.Thread(target=radixSortHandler)
-
-        if t1:
-            t1.start()
-        if t2:
-            t2.start()
-        if t3:
-            t3.start()
-        if t4:
-            t4.start()
+        selected = [bubbleSortBool.get(), mergeSortBool.get(),
+                    quickSortBool.get(), radixSortBool.get()]
+        processes = []
+        
+        for i, v in enumerate(selected):
+            if v == 1:
+                if i == 0:
+                    print('Bubble sort selected')
+                    p = multiprocessing.Process(target=bubble_sort, args=(arr, draw_data, 0.1))
+                    processes.append(p)
+                elif i == 1:
+                    print('Merge sort selected')
+                    p = multiprocessing.Process(target=merge_sort, args=(arr, draw_data, 0.1))
+                    processes.append(p)
+                elif i == 2:
+                    print('Quick sort selected')
+                    p = multiprocessing.Process(target=quick_sort, args=(arr, draw_data, 0.1))
+                    processes.append(p)
+                elif i == 3:
+                    print('Radix sort selected')
+                    p = multiprocessing.Process(target=radix_sort, args=(arr, draw_data, 0.1))
+                    processes.append(p)
+        
+        for p in processes:
+            p.start()
 
     tk.Button(window, text="Sort!", command=startSorting).pack()
     window.mainloop()

@@ -1,7 +1,7 @@
 import tkinter as tk
 import random
 from visualizer import visualize_sorting
-from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort
+from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort, linear_search
 import multiprocessing
 
 
@@ -29,10 +29,12 @@ def main():
     mergeSortBool = tk.IntVar(value=1)
     quickSortBool = tk.IntVar(value=1)
     radixSortBool = tk.IntVar(value=1)
+    linearAlgoBool = tk.IntVar(value=1)
     tk.Checkbutton(window, text="Bubble Sort", variable=bubbleSortBool).pack()
     tk.Checkbutton(window, text="Merge Sort", variable=mergeSortBool).pack()
     tk.Checkbutton(window, text="Quick Sort", variable=quickSortBool).pack()
     tk.Checkbutton(window, text="Radix Sort", variable=radixSortBool).pack()
+    tk.Checkbutton(window, text="Linear Search", variable=linearAlgoBool).pack()
 
     speed = tk.IntVar(value=100)
 
@@ -67,7 +69,7 @@ def main():
 
     def startSorting():
         selected = [bubbleSortBool.get(), mergeSortBool.get(),
-                    quickSortBool.get(), radixSortBool.get()]
+                    quickSortBool.get(), radixSortBool.get(), linearAlgoBool.get()]
         processes = []
         delay = speed.get()/1000
 
@@ -92,6 +94,11 @@ def main():
                     print('Radix sort selected')
                     p = multiprocessing.Process(
                         target=visualize_sorting, args=(radix_sort, arr, delay))
+                    processes.append(p)
+                elif i == 4:
+                    print('Linear search selected')
+                    p = multiprocessing.Process(
+                        target=visualize_sorting, args=(linear_search, arr, delay))
                     processes.append(p)
 
         for p in processes:

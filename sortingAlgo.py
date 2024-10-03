@@ -129,3 +129,24 @@ def counting_sort(arr, exp, draw_data=None, delay=0):
             draw_data(
                 arr, ["green" if x == i else "blue" for x in range(len(arr))], algo_num=3)
         time.sleep(delay)
+
+
+#           Linear search algo.
+def linear_search(arr, target, draw_data=None, delay=0):
+
+    for index in range(len(arr)):
+        if draw_data:
+            draw_data(arr, ['red' if x == index else 'blue' for x in range(len(arr))])
+
+        # bit useless but if there is delay
+        if delay:
+            time.sleep(delay)
+
+        if arr[index] == target:
+            if draw_data:
+                draw_data(arr, ['green' if x == index else 'blue' for x in range(len(arr))])
+            return index
+
+    if draw_data:
+        draw_data(arr, ['blue' for x in range(len(arr))])
+    return -1

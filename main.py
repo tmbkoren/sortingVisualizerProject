@@ -6,11 +6,12 @@ from searchAlgo import linear_search
 import multiprocessing
 
 
+#Display generated array
 def printValues(window, values):
     print('Values: ', values)
     tk.Label(window, text=values, wraplength=600).pack()
 
-
+#Generate random array
 def generateRandomArray(length, minVal, maxVal):
     temp = [random.randint(minVal, maxVal) for _ in range(length)]
     print('Temp: ', temp)
@@ -20,6 +21,7 @@ def generateRandomArray(length, minVal, maxVal):
 arr = []
 
 
+#Sorting UI
 def sortingUI(window):
     print('Sorting UI')
     subwindow = tk.Toplevel(window)
@@ -62,7 +64,6 @@ def sortingUI(window):
 
     tk.Button(subwindow, text="Generate!", command=generateButtonHandler).pack()
 
-    # Function to handle the click event of the 'sort' button, not functional yet
 
     def startSorting():
         selected = [bubbleSortBool.get(), mergeSortBool.get(),
@@ -70,12 +71,13 @@ def sortingUI(window):
         processes = []
         delay = speed.get()/1000
 
+        # Create a suprocess for each selected sorting algorithm
+
         for i, v in enumerate(selected):
             if v == 1:
                 if i == 0:
                     print('Bubble sort selected')
                     p = multiprocessing.Process(
-                        # target=visualize_sorting, args=(bubble_sort, arr, delay))
                         target=visualize_sorting, args=(bubble_sort, arr, delay, pause_event))
                     processes.append(p)
                 elif i == 1:
@@ -94,6 +96,7 @@ def sortingUI(window):
                         target=visualize_sorting, args=(radix_sort, arr, delay, pause_event))
                     processes.append(p)
 
+        #Start all processes
         for p in processes:
             p.start()
 
@@ -113,6 +116,7 @@ def sortingUI(window):
     tk.Button(subwindow, text="Resume", command=resume).pack()
 
 
+#Searching UI
 def searchUI(window):
     subwindow = tk.Toplevel(window)
     subwindow.title("Linear Search Algorithm Visualizer")
@@ -151,16 +155,6 @@ def searchUI(window):
     searchVal = tk.StringVar(value=1)
     tk.Entry(subwindow, textvariable=searchVal).pack()
 
-    # def handleLinearSearch(arr, delay, target, pause_event):
-    #     res = linear_search(
-    #         arr,
-    #         delay,
-    #         target,
-    #         pause_event
-    #     )
-
-    #     print(f'Search result: {res}')
-    #     tk.Label(subwindow, text=f'Search result: {res}').pack()
 
     def startSearching():
 
@@ -171,10 +165,10 @@ def searchUI(window):
         p.start()
 
         def pause():
-            search_pause_event.set() # Pauses all processes
+            search_pause_event.set() # Pauses  process
 
         def resume():
-            search_pause_event.clear()  # Resumes all processes
+            search_pause_event.clear()  # Resumes process
 
         # Pause button
         tk.Button(subwindow, text="Pause", command=pause).pack()
@@ -183,10 +177,6 @@ def searchUI(window):
         tk.Button(subwindow, text="Resume", command=resume).pack()
 
     tk.Button(subwindow, text="Search!", command=startSearching).pack()
-
-    print(f'Array: {arr}, arrLength: {arrLength.get()}, minVal: {minVal.get()}, maxVal: {maxVal.get()}')
-
-
 
 def main():
     # UI declaration

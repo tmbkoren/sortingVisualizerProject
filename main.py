@@ -1,7 +1,7 @@
 import tkinter as tk
 import random
 from visualizer import visualize_sorting, draw_data
-from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort
+from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort, pause_event
 from searchAlgo import linear_search
 import multiprocessing
 
@@ -25,7 +25,7 @@ def sortingUI(window):
     subwindow = tk.Toplevel(window)
     subwindow.title("Sorting Algorithm Visualizer")
     subwindow.geometry("800x600")
-    
+
     bubbleSortBool = tk.IntVar(value=1)
     mergeSortBool = tk.IntVar(value=1)
     quickSortBool = tk.IntVar(value=1)
@@ -75,22 +75,23 @@ def sortingUI(window):
                 if i == 0:
                     print('Bubble sort selected')
                     p = multiprocessing.Process(
-                        target=visualize_sorting, args=(bubble_sort, arr, delay))
+                        # target=visualize_sorting, args=(bubble_sort, arr, delay))
+                        target=visualize_sorting, args=(bubble_sort, arr, delay, pause_event))
                     processes.append(p)
                 elif i == 1:
                     print('Merge sort selected')
                     p = multiprocessing.Process(
-                        target=visualize_sorting, args=(merge_sort, arr, delay))
+                        target=visualize_sorting, args=(merge_sort, arr, delay, pause_event))
                     processes.append(p)
                 elif i == 2:
                     print('Quick sort selected')
                     p = multiprocessing.Process(
-                        target=visualize_sorting, args=(quick_sort, arr, delay))
+                        target=visualize_sorting, args=(quick_sort, arr, delay, pause_event))
                     processes.append(p)
                 elif i == 3:
                     print('Radix sort selected')
                     p = multiprocessing.Process(
-                        target=visualize_sorting, args=(radix_sort, arr, delay))
+                        target=visualize_sorting, args=(radix_sort, arr, delay, pause_event))
                     processes.append(p)
 
         for p in processes:
@@ -99,6 +100,17 @@ def sortingUI(window):
     tk.Button(subwindow, text="Sort!", command=startSorting).pack()
 
 
+    def pause():
+        pause_event.set() # Pauses all processes
+
+    def resume():
+        pause_event.clear()  # Resumes all processes
+
+    # Pause button
+    tk.Button(subwindow, text="Pause", command=pause).pack()
+
+    # Resume button
+    tk.Button(subwindow, text="Resume", command=resume).pack()
 
 
 def searchUI(window):
@@ -139,14 +151,41 @@ def searchUI(window):
     searchVal = tk.StringVar(value=1)
     tk.Entry(subwindow, textvariable=searchVal).pack()
 
+    # def handleLinearSearch(arr, delay, target, pause_event):
+    #     res = linear_search(
+    #         arr,
+    #         delay,
+    #         target,
+    #         pause_event
+    #     )
+
+    #     print(f'Search result: {res}')
+    #     tk.Label(subwindow, text=f'Search result: {res}').pack()
+
     def startSearching():
-        res = linear_search(arr, delay=speed.get()/1000, target=int(searchVal.get()))
-        print(f'Search result: {res}')
-        tk.Label(subwindow, text=f'Search result: {res}').pack()
+
+        search_pause_event = multiprocessing.Event()
+
+        p = multiprocessing.Process(target=linear_search, args=(
+            arr, speed.get()/1000, int(searchVal.get()), search_pause_event))
+        p.start()
+
+        def pause():
+            search_pause_event.set() # Pauses all processes
+
+        def resume():
+            search_pause_event.clear()  # Resumes all processes
+
+        # Pause button
+        tk.Button(subwindow, text="Pause", command=pause).pack()
+
+        # Resume button
+        tk.Button(subwindow, text="Resume", command=resume).pack()
 
     tk.Button(subwindow, text="Search!", command=startSearching).pack()
-    print(f'Array: {arr}, arrLength: {
-          arrLength.get()}, minVal: {minVal.get()}, maxVal: {maxVal.get()}')
+
+    print(f'Array: {arr}, arrLength: {arrLength.get()}, minVal: {minVal.get()}, maxVal: {maxVal.get()}')
+
 
 
 def main():

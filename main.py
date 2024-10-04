@@ -1,7 +1,8 @@
 import tkinter as tk
 import random
-from visualizer import visualize_sorting
-from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort, linear_search
+from visualizer import visualize_sorting, draw_data
+from sortingAlgo import bubble_sort, merge_sort, quick_sort, radix_sort
+from searchAlgo import linear_search
 import multiprocessing
 
 
@@ -19,57 +20,53 @@ def generateRandomArray(length, minVal, maxVal):
 arr = []
 
 
-def main():
-    # UI declaration
-    window = tk.Tk()
-    window.title("Sorting Algorithm Visualizer")
-    window.geometry("800x600")
+def sortingUI(window):
+    print('Sorting UI')
+    subwindow = tk.Toplevel(window)
+    subwindow.title("Sorting Algorithm Visualizer")
+    subwindow.geometry("800x600")
 
     bubbleSortBool = tk.IntVar(value=1)
     mergeSortBool = tk.IntVar(value=1)
     quickSortBool = tk.IntVar(value=1)
     radixSortBool = tk.IntVar(value=1)
-    linearAlgoBool = tk.IntVar(value=1)
-    tk.Checkbutton(window, text="Bubble Sort", variable=bubbleSortBool).pack()
-    tk.Checkbutton(window, text="Merge Sort", variable=mergeSortBool).pack()
-    tk.Checkbutton(window, text="Quick Sort", variable=quickSortBool).pack()
-    tk.Checkbutton(window, text="Radix Sort", variable=radixSortBool).pack()
-    tk.Checkbutton(window, text="Linear Search", variable=linearAlgoBool).pack()
+    tk.Checkbutton(subwindow, text="Bubble Sort", variable=bubbleSortBool).pack()
+    tk.Checkbutton(subwindow, text="Merge Sort", variable=mergeSortBool).pack()
+    tk.Checkbutton(subwindow, text="Quick Sort", variable=quickSortBool).pack()
+    tk.Checkbutton(subwindow, text="Radix Sort", variable=radixSortBool).pack()
 
     speed = tk.IntVar(value=100)
 
-    tk.Label(window, text="Select delay(ms) between steps: ").pack()
-    tk.Scale(window, from_=50, to=1000, resolution=1,
+    tk.Label(subwindow, text="Select delay(ms) between steps: ").pack()
+    tk.Scale(subwindow, from_=50, to=1000, resolution=1,
              orient=tk.HORIZONTAL, length=400, variable=speed).pack()
 
     arrLength = tk.IntVar(value=15)
     minVal = tk.StringVar(value=1)
     maxVal = tk.StringVar(value=40)
 
-    tk.Label(window, text="Select array length: ").pack()
-    tk.Scale(window, from_=1, to=100,
+    tk.Label(subwindow, text="Select array length: ").pack()
+    tk.Scale(subwindow, from_=1, to=100,
              orient=tk.HORIZONTAL, length=400, variable=arrLength).pack()
-    tk.Label(window, text="Select minimum value: ").pack()
-    tk.Entry(window, textvariable=minVal).pack()
-    tk.Label(window, text="Select maximum value: ").pack()
-    tk.Entry(window, textvariable=maxVal).pack()
-
-    # Function to handle the click event of the 'generate' button
+    tk.Label(subwindow, text="Select minimum value: ").pack()
+    tk.Entry(subwindow, textvariable=minVal).pack()
+    tk.Label(subwindow, text="Select maximum value: ").pack()
+    tk.Entry(subwindow, textvariable=maxVal).pack()
 
     def generateButtonHandler():
         global arr
         arr = generateRandomArray(arrLength.get(), int(
             minVal.get()), int(maxVal.get())).copy()
         print('Array: ', arr)
-        printValues(window, arr)
+        printValues(subwindow, arr)
 
-    tk.Button(window, text="Generate!", command=generateButtonHandler).pack()
+    tk.Button(subwindow, text="Generate!", command=generateButtonHandler).pack()
 
     # Function to handle the click event of the 'sort' button, not functional yet
 
     def startSorting():
         selected = [bubbleSortBool.get(), mergeSortBool.get(),
-                    quickSortBool.get(), radixSortBool.get(), linearAlgoBool.get()]
+                    quickSortBool.get(), radixSortBool.get()]
         processes = []
         delay = speed.get()/1000
 
@@ -95,16 +92,72 @@ def main():
                     p = multiprocessing.Process(
                         target=visualize_sorting, args=(radix_sort, arr, delay))
                     processes.append(p)
-                elif i == 4:
-                    print('Linear search selected')
-                    p = multiprocessing.Process(
-                        target=visualize_sorting, args=(linear_search, arr, delay))
-                    processes.append(p)
 
         for p in processes:
             p.start()
 
-    tk.Button(window, text="Sort!", command=startSorting).pack()
+    tk.Button(subwindow, text="Sort!", command=startSorting).pack()
+
+
+
+
+def searchUI(window):
+    subwindow = tk.Toplevel(window)
+    subwindow.title("Linear Search Algorithm Visualizer")
+    subwindow.geometry("800x600")
+
+    speed = tk.IntVar(value=100)
+
+    tk.Label(subwindow, text="Select delay(ms) between steps: ").pack()
+    tk.Scale(subwindow, from_=50, to=1000, resolution=1,
+             orient=tk.HORIZONTAL, length=400, variable=speed).pack()
+
+    minVal = tk.StringVar(value=1)
+    maxVal = tk.StringVar(value=40)
+
+
+    arrLength = tk.IntVar(value=15)
+    tk.Label(subwindow, text="Select array length: ").pack()
+    arrLenScale = tk.Scale(subwindow, from_=1, to=100,
+             orient=tk.HORIZONTAL, length=400, variable=arrLength)
+    arrLenScale.pack()
+    tk.Label(subwindow, text="Select minimum value: ").pack()
+    tk.Entry(subwindow, textvariable=minVal).pack()
+    tk.Label(subwindow, text="Select maximum value: ").pack()
+    tk.Entry(subwindow, textvariable=maxVal).pack()
+
+    def generateButtonHandler():
+        global arr
+        arr = generateRandomArray(arrLength.get(), int(
+            minVal.get()), int(maxVal.get())).copy()
+        print('Array: ', arr)
+        printValues(subwindow, arr)
+
+    tk.Button(subwindow, text="Generate!", command=generateButtonHandler).pack()
+
+    tk.Label(subwindow, text="Select the value to search: ").pack()
+    searchVal = tk.StringVar(value=1)
+    tk.Entry(subwindow, textvariable=searchVal).pack()
+
+    def startSearching():
+        res = linear_search(arr, delay=speed.get()/1000, target=int(searchVal.get()))
+        print(f'Search result: {res}')
+        tk.Label(subwindow, text=f'Search result: {res}').pack()
+
+    tk.Button(subwindow, text="Search!", command=startSearching).pack()
+    print(f'Array: {arr}, arrLength: {
+          arrLength.get()}, minVal: {minVal.get()}, maxVal: {maxVal.get()}')
+
+
+def main():
+    # UI declaration
+    window = tk.Tk()
+    window.title("Sorting Algorithm Visualizer")
+    window.geometry("300x100")
+
+    tk.Button(window, text="Sorting mode", command=lambda: sortingUI(window)).pack()
+    tk.Button(window, text="Searching mode", command=lambda: searchUI(window)).pack()
+
     window.mainloop()
 
 

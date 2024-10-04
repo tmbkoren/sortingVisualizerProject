@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 
 
 # algo_num: 0 for bubble sort, 1 for merge sort, 2 for quick sort, 3 for radix sort
-algo_names = ['Bubble Sort', 'Merge Sort', 'Quick Sort', 'Radix Sort']
+algo_names = ['Bubble Sort', 'Merge Sort', 'Quick Sort', 'Radix Sort', 'Linear Search Algo']
 
 # coordinates for window for each algorithm, same order, format is 'x+y'
-coords = ['20+40', '720+40', '20+420', '720+420']
+coords = ['20+40', '750+40', '20+520', '750+520', '1000+600']
 
 def draw_data(arr, color_array, delay=0.05, algo_num=0):
     plt.clf()  # Clear the previous plot

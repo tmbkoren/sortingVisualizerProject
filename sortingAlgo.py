@@ -3,7 +3,7 @@ import time
 # Bubble Sort
 
 
-def bubble_sort(arr, draw_data=None, delay=0):
+def bubble_sort(arr, draw_data=None, delay=0, startTime=0):
     print('Bubble sorting... ', arr)
     n = len(arr)
     for i in range(n):
@@ -12,22 +12,22 @@ def bubble_sort(arr, draw_data=None, delay=0):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
             if draw_data:
                 draw_data(arr, ["green" if x == j or x == j +
-                          1 else "blue" for x in range(len(arr))], algo_num=0)
+                          1 else "blue" for x in range(len(arr))], algo_num=0, startTime=startTime)
             time.sleep(delay)
     return arr
 
 # Merge Sort
 
 
-def merge_sort(arr, draw_data=None, delay=0):
+def merge_sort(arr, draw_data=None, delay=0, startTime=0):
     print('Merge sorting... ')
     if len(arr) > 1:
         mid = len(arr) // 2
         L = arr[:mid]
         R = arr[mid:]
 
-        merge_sort(L, draw_data, delay)
-        merge_sort(R, draw_data, delay)
+        merge_sort(L, draw_data, delay, startTime)
+        merge_sort(R, draw_data, delay, startTime)
 
         i = j = k = 0
 
@@ -40,7 +40,7 @@ def merge_sort(arr, draw_data=None, delay=0):
                 j += 1
             k += 1
             if draw_data:
-                draw_data(arr, ["green" for x in range(len(arr))], algo_num=1)
+                draw_data(arr, ["green" for x in range(len(arr))], algo_num=1, startTime=startTime)
             time.sleep(delay)
 
         while i < len(L):
@@ -53,26 +53,26 @@ def merge_sort(arr, draw_data=None, delay=0):
             j += 1
             k += 1
         if draw_data:
-            draw_data(arr, ["green" for x in range(len(arr))], algo_num=1)
+            draw_data(arr, ["green" for x in range(len(arr))], algo_num=1, startTime=startTime)
     return arr
 
 # Quick Sort
 
 
-def quick_sort(arr, draw_data=None, delay=0, low=0, high=None):
+def quick_sort(arr, draw_data=None, delay=0, startTime=0, low=0, high=None):
     print('Quick sorting... ')
     if high is None:
         high = len(arr) - 1
 
     if low < high:
-        pi = partition(arr, low, high, draw_data, delay)
-        quick_sort(arr, draw_data, delay, low, pi - 1)
-        quick_sort(arr, draw_data, delay, pi + 1, high)
+        pi = partition(arr, low, high, draw_data, startTime, delay)
+        quick_sort(arr, draw_data, delay, startTime, low, pi - 1)
+        quick_sort(arr, draw_data, delay, startTime, pi + 1, high)
 
     return arr
 
 
-def partition(arr, low, high, draw_data=None, delay=0):
+def partition(arr, low, high, draw_data=None, startTime=0, delay=0):
     pivot = arr[high]
     i = low - 1
 
@@ -82,31 +82,31 @@ def partition(arr, low, high, draw_data=None, delay=0):
             arr[i], arr[j] = arr[j], arr[i]
         if draw_data:
             draw_data(arr, ["green" if x == i or x ==
-                      j else "blue" for x in range(len(arr))], algo_num=2)
+                      j else "blue" for x in range(len(arr))], algo_num=2, startTime=startTime)
         time.sleep(delay)
 
     arr[i + 1], arr[high] = arr[high], arr[i + 1]
     if draw_data:
         draw_data(arr, ["green" if x == i or x ==
-                        j else "blue" for x in range(len(arr))], algo_num=2)
+                        j else "blue" for x in range(len(arr))], algo_num=2, startTime=startTime)
         time.sleep(delay)
     return i + 1
 
 # Radix Sort
 
 
-def radix_sort(arr, draw_data=None, delay=0):
+def radix_sort(arr, draw_data=None, delay=0, startTime=0):
     print('Radix sorting... ')
     max_num = max(arr)
     exp = 1
     while max_num // exp > 0:
-        counting_sort(arr, exp, draw_data, delay)
+        counting_sort(arr, exp, draw_data, delay, startTime)
         exp *= 10
 
     return arr
 
 
-def counting_sort(arr, exp, draw_data=None, delay=0):
+def counting_sort(arr, exp, draw_data=None, delay=0, startTime=0):
     n = len(arr)
     output = [0] * n
     count = [0] * 10
@@ -127,5 +127,5 @@ def counting_sort(arr, exp, draw_data=None, delay=0):
         arr[i] = output[i]
         if draw_data:
             draw_data(
-                arr, ["green" if x == i else "blue" for x in range(len(arr))], algo_num=3)
+                arr, ["green" if x == i else "blue" for x in range(len(arr))], algo_num=3, startTime=startTime)
         time.sleep(delay)

@@ -25,7 +25,7 @@ def sortingUI(window):
     subwindow = tk.Toplevel(window)
     subwindow.title("Sorting Algorithm Visualizer")
     subwindow.geometry("800x600")
-
+    
     bubbleSortBool = tk.IntVar(value=1)
     mergeSortBool = tk.IntVar(value=1)
     quickSortBool = tk.IntVar(value=1)
